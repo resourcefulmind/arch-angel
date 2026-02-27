@@ -1,0 +1,36 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+
+# Environment variables (never commit secrets)
+.env
+.env.local
+.env.*.local
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Test coverage
+coverage/
+
+# Logs
+*.log
+
+# PDF (large binary, not needed in repo)
+*.pdf
+
+# Private docs — not for public repo
+CLAUDE.md
+docs/TWEETS.md
+docs/LESSONS.md
+docs/RESEARCH.md
+docs/weeks/

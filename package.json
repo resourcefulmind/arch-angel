@@ -1,0 +1,35 @@
+{
+  "name": "arch-angel",
+  "version": "0.1.0",
+  "description": "Persistent architectural memory for engineering teams",
+  "type": "module",
+  "main": "dist/cli/index.js",
+  "bin": {
+    "arch-angel": "dist/cli/index.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsx src/cli/index.ts",
+    "test": "vitest",
+    "lint": "biome check src/",
+    "lint:fix": "biome check --write src/"
+  },
+  "keywords": [
+    "architecture",
+    "ai",
+    "codebase",
+    "memory",
+    "developer-tools"
+  ],
+  "license": "MIT",
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^2.4.4",
+    "@types/node": "^25.3.0",
+    "tsx": "^4.21.0",
+    "typescript": "^5.9.3",
+    "vitest": "^4.0.18"
+  }
+}
