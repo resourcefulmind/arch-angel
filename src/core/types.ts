@@ -7,7 +7,9 @@ export interface FileNode {
   name: string;
   path: string;
   type: "file" | "directory";
-  children?: FileNode[];
+  children?: FileNode[]; 
+  extension?: string;
+  sizeBytes?: number;
 }
 
 /** Result of scanning a repository. */
