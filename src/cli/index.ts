@@ -26,13 +26,14 @@ if (command === "scan") {
     process.exit(1);
   }
   console.log(`Scanning: ${targetPath}`);
-  const tree = scanDirectory(targetPath);
+  const {tree, warnings} = scanDirectory(targetPath);
   const result = {
       version: "1",
       timestamp: new Date().toISOString(),
       root: targetPath,
       tree: tree,
-      stats: {}  // Day 4
+      stats: {},   // Day 4
+      warnings: warnings,
   };
   console.log(JSON.stringify(result, null, 2));
 } else {
