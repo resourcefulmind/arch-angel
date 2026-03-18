@@ -26,16 +26,13 @@ if (command === "scan") {
     process.exit(1);
   }
   console.log(`Scanning: ${targetPath}`);
-  const {tree, warnings} = scanDirectory(targetPath);
-  const result = {
-      version: "1",
-      timestamp: new Date().toISOString(),
-      root: targetPath,
-      tree: tree,
-      stats: {},   // Day 4
-      warnings: warnings,
-  };
-  console.log(JSON.stringify(result, null, 2));
+  const scanResult = scanDirectory(targetPath);
+  const output = {
+    version: "1", 
+    timestamp: new Date().toISOString(), 
+    ...scanResult, 
+  }
+  console.log(JSON.stringify(output, null, 2));
 } else {
   console.error(`Unknown command: ${command}`);
   process.exit(1);

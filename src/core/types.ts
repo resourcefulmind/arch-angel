@@ -18,7 +18,9 @@ export interface ScanResult {
     totalFiles: number;
     totalDirectories: number;
     languages: Record<string, number>;
+    totalSizeBytes: number;
   };
+  warnings: readonly ScanWarning[];
 }
 
 /** Caller-provided overrides for scanner behavior. All fields optional and defaults applied at scan time. */
