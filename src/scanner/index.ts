@@ -3,15 +3,15 @@
  */
 import fs from "fs";
 import path from "path";
-import { FileNode } from "../core/types.js";
-import { ScanOptions, ScanContext, ScanWarning } from "../core/types.js";
+import { FileNode, ScanResult, ScanOptions, ScanContext } from "../core/types.js";
 import { DEFAULT_IGNORED_DIRECTORIES, DEFAULT_MAX_FILE_SIZE_BYTES, BINARY_EXTENSIONS, SENSITIVE_FILE_PATTERNS } from "../core/constants.js"; 
 import { shouldIgnoreDirectory, isFileTooLarge, isBinaryFile, isSensitiveFile, isValidUtf8 } from "./filters.js";
 import ignore from "ignore";
+import { computeStats } from "./stats.js";
 
 //function signature for scanDirectory
 
-export function scanDirectory(dirPath: string, options?: ScanOptions): {tree: FileNode, warnings: readonly ScanWarning[]} {
+export function scanDirectory(dirPath: string, options?: ScanOptions): ScanResult {
     const context: ScanContext ={
         warnings: [], 
         options: {
@@ -32,7 +32,13 @@ export function scanDirectory(dirPath: string, options?: ScanOptions): {tree: Fi
         }
     }
     const tree = walkDirectory(dirPath, context);
-    return {tree, warnings: context.warnings};
+    const stats = computeStats(tree);
+    return {
+        root: dirPath,
+        tree: tree,
+        stats: stats,
+        warnings: context.warnings,
+    };
 };
 
 function walkDirectory(dirPath: string, context: ScanContext): FileNode {
@@ -101,7 +107,7 @@ function walkDirectory(dirPath: string, context: ScanContext): FileNode {
                     name: item,                                                                                                                                
                     path: fullPath,                
                     type: "file",
-                    extension: path.extname(fullPath),
+                    extension: path.extname(fullPath) || undefined,
                     sizeBytes: stat.size
                 });
             }
