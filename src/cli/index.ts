@@ -6,34 +6,41 @@
  */
 
 import { scanDirectory } from "../scanner/index.js";
+import { Command } from "commander";
+import { formatTree } from "./formatTree.js";
 
-const args = process.argv.slice(2);
-const command = args[0];
+const archAngel = new Command(); 
 
-if (!command) {
-  console.log("arch-angel - Persistent architectural memory for engineering teams\n");
-  console.log("Commands:");
-  console.log("  scan <path>    Scan a repository and output its structure");
-  console.log("  --help         Show this help message");
-  process.exit(0);
-}
-
-if (command === "scan") {
-  const targetPath = args[1];
-  if (!targetPath) {
-    console.error("Error: Please provide a path to scan.");
-    console.error("Usage: arch-angel scan <path>");
-    process.exit(1);
-  }
-  console.log(`Scanning: ${targetPath}`);
-  const scanResult = scanDirectory(targetPath);
-  const output = {
+archAngel.name("arch-angel").command("scan <path>")
+  .version("0.1.0")
+  .description("Scan a repository and output its structure") 
+  .option("-o, --output <file>", "Write output to file") 
+  .option("-j, --json", "Output in raw JSON format") 
+  .option("-v, --verbose", "Show detailed progress information") 
+  .option("-q, --quiet", "Suppress all output except errors") 
+  .option("-d, --depth <number>", "Set the maximum depth of the directory tree to scan") 
+  .option("-n, --no-write", "Do not create .arch-angel/ director")
+  .action((path, options) => {
+    if (options.verbose && options.quiet) {
+      console.error("Error: Cannot use verbose and quiet together");
+      process.exit(1);
+    }
+    if (options.depth && isNaN(Number(options.depth))) {
+      console.error("Error: Depth must be a number");
+      process.exit(1);
+    }
+    if (options.json && options.verbose) {
+      console.error("Error: Cannot use json and verbose together");
+      process.exit(1);
+    }
+    const scanResult = scanDirectory(path);
+    const output = {
     version: "1", 
     timestamp: new Date().toISOString(), 
     ...scanResult, 
   }
-  console.log(JSON.stringify(output, null, 2));
-} else {
-  console.error(`Unknown command: ${command}`);
-  process.exit(1);
-}
+    console.log(formatTree(output.tree));
+  });
+  
+
+archAngel.parse(process.argv);
