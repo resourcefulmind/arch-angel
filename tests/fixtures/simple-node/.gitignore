@@ -1,2 +1,4 @@
 *.log
 *.lock
+.arch-angel/
+scan-result.json
