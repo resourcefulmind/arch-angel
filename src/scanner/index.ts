@@ -50,10 +50,31 @@ function walkDirectory(dirPath: string, context: ScanContext): FileNode {
         children: [], 
     }
     //read the directory and get the items
-    const items = fs.readdirSync(dirPath);
+
+    let items: string[] = [];
+    try {
+        items = fs.readdirSync(dirPath);
+    } catch (error) {
+        context.warnings.push({
+            type: "permission_denied", 
+            path: dirPath, 
+            message: `Permission denied: ${dirPath}`
+        });
+        return node;
+    }
     for (const item of items) {
         const fullPath = path.join(dirPath, item); 
-        const stat = fs.lstatSync(fullPath);
+        let stat; 
+        try {
+            stat = fs.lstatSync(fullPath);
+        } catch (error) {
+            context.warnings.push({
+                type: "permission_denied", 
+                path: fullPath, 
+                message: `Permission denied: ${fullPath}`
+            });
+            continue;
+        }
         if (context.gitignore){
             if (context.gitignore.ignores(path.relative(context.rootPath, fullPath))) {
                 continue;
@@ -114,4 +135,5 @@ function walkDirectory(dirPath: string, context: ScanContext): FileNode {
         }
     }
     return node;
+
 }
